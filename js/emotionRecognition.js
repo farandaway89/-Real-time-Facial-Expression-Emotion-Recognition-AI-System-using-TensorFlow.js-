@@ -42,7 +42,7 @@ class EmotionRecognition {
         try {
             // Try CDN first (works with file:// protocol), fallback to local models
             const modelPaths = [
-                'https://unpkg.com/face-api.js@0.22.2/weights',
+                'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights',
                 './models'
             ];
 
