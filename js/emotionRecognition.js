@@ -40,10 +40,11 @@ class EmotionRecognition {
      */
     async loadModels() {
         try {
-            // Try CDN first (works with file:// protocol), fallback to local models
+            // Try local models first, then fallback to CDN
             const modelPaths = [
+                './models',
                 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights',
-                './models'
+                'https://justadudewhohacks.github.io/face-api.js/weights'
             ];
 
             document.getElementById('modelStatus').textContent = '모델 로딩 중...';
@@ -205,6 +206,15 @@ class EmotionRecognition {
                 if (detections.length > 0) {
                     // Get the first face (you can modify this to handle multiple faces)
                     const detection = detections[0];
+
+                    // Debug: Check if expressions exist
+                    if (!detection.expressions) {
+                        console.error('❌ No expressions in detection!', detection);
+                        this.resetEmotionDisplay();
+                        return;
+                    }
+
+                    console.log('✅ Expressions detected:', detection.expressions);
 
                     // Draw detection results
                     this.drawDetection(detection);
