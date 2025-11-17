@@ -40,7 +40,7 @@ class EmotionRecognition {
      */
     async loadModels() {
         try {
-            const modelPath = '/models';
+            const modelPath = './models';
 
             document.getElementById('modelStatus').textContent = '모델 로딩 중...';
             document.getElementById('modelStatus').classList.add('loading');
