@@ -12,16 +12,25 @@ let reportGenerator = null;
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 Initializing Emotion Recognition System...');
 
+    // Check if face-api is loaded
+    if (typeof faceapi === 'undefined') {
+        console.error('❌ face-api.js not loaded!');
+        alert('라이브러리 로딩 실패. 페이지를 새로고침해주세요.');
+        return;
+    }
+
+    console.log('✅ face-api.js loaded successfully');
+
     // Create instances
     emotionRecognition = new EmotionRecognition();
     emotionTracker = new EmotionTracker();
     reportGenerator = new ReportGenerator();
 
-    // Load face-api.js models
-    await emotionRecognition.loadModels();
-
     // Setup event listeners
     setupEventListeners();
+
+    // Load face-api.js models
+    await emotionRecognition.loadModels();
 
     console.log('✅ Application initialized successfully');
 });
