@@ -68,6 +68,13 @@ class EmotionRecognition {
                     document.getElementById('modelStatus').classList.remove('loading');
                     document.getElementById('modelStatus').style.color = '#10b981';
 
+                    // Enable start button
+                    const startBtn = document.getElementById('startBtn');
+                    if (startBtn) {
+                        startBtn.disabled = false;
+                        startBtn.textContent = '시작하기';
+                    }
+
                     console.log(`✅ Face-api.js models loaded successfully from: ${modelPath}`);
                     return true;
                 } catch (error) {
