@@ -40,30 +40,59 @@ class EmotionRecognition {
      */
     async loadModels() {
         try {
-            const modelPath = './models';
+            // Try CDN first (works with file:// protocol), fallback to local models
+            const modelPaths = [
+                'https://unpkg.com/face-api.js@0.22.2/weights',
+                './models'
+            ];
 
             document.getElementById('modelStatus').textContent = '모델 로딩 중...';
             document.getElementById('modelStatus').classList.add('loading');
 
-            await Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri(modelPath),
-                faceapi.nets.faceLandmark68Net.loadFromUri(modelPath),
-                faceapi.nets.faceRecognitionNet.loadFromUri(modelPath),
-                faceapi.nets.faceExpressionNet.loadFromUri(modelPath)
-            ]);
+            let lastError = null;
 
-            this.modelsLoaded = true;
-            document.getElementById('modelStatus').textContent = '준비 완료';
-            document.getElementById('modelStatus').classList.remove('loading');
-            document.getElementById('modelStatus').style.color = '#10b981';
+            for (let i = 0; i < modelPaths.length; i++) {
+                const modelPath = modelPaths[i];
+                console.log(`🔄 Trying to load models from: ${modelPath}`);
 
-            console.log('✅ Face-api.js models loaded successfully');
-            return true;
+                try {
+                    await Promise.all([
+                        faceapi.nets.tinyFaceDetector.loadFromUri(modelPath),
+                        faceapi.nets.faceLandmark68Net.loadFromUri(modelPath),
+                        faceapi.nets.faceRecognitionNet.loadFromUri(modelPath),
+                        faceapi.nets.faceExpressionNet.loadFromUri(modelPath)
+                    ]);
+
+                    this.modelsLoaded = true;
+                    document.getElementById('modelStatus').textContent = '준비 완료';
+                    document.getElementById('modelStatus').classList.remove('loading');
+                    document.getElementById('modelStatus').style.color = '#10b981';
+
+                    console.log(`✅ Face-api.js models loaded successfully from: ${modelPath}`);
+                    return true;
+                } catch (error) {
+                    console.warn(`⚠️ Failed to load from ${modelPath}:`, error.message);
+                    lastError = error;
+                    // Continue to next model path
+                }
+            }
+
+            // If we get here, all paths failed
+            throw lastError;
+
         } catch (error) {
-            console.error('❌ Error loading models:', error);
+            console.error('❌ Error loading models from all sources:', error);
             document.getElementById('modelStatus').textContent = '모델 로딩 실패';
             document.getElementById('modelStatus').style.color = '#ef4444';
-            alert('모델을 로드하는 중 오류가 발생했습니다. 인터넷 연결을 확인하고 페이지를 새로고침해주세요.');
+
+            // More helpful error message
+            const errorMsg = `모델 로드 실패:\n\n` +
+                `1. 인터넷 연결을 확인하세요\n` +
+                `2. 브라우저 콘솔(F12)에서 자세한 오류를 확인하세요\n` +
+                `3. Chrome 브라우저를 사용하세요\n\n` +
+                `오류 상세: ${error.message}`;
+
+            alert(errorMsg);
             return false;
         }
     }
