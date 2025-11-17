@@ -40,7 +40,7 @@ class EmotionRecognition {
      */
     async loadModels() {
         try {
-            const modelPath = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+            const modelPath = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights/';
 
             document.getElementById('modelStatus').textContent = '모델 로딩 중...';
             document.getElementById('modelStatus').classList.add('loading');
