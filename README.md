@@ -6,6 +6,11 @@ Real-time Facial Expression Emotion Recognition AI System using TensorFlow.js
 [![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-4.11.0-orange.svg)](https://www.tensorflow.org/js)
 [![Face-API.js](https://img.shields.io/badge/Face--API.js-0.22.2-blue.svg)](https://github.com/justadudewhohacks/face-api.js)
 
+## 🌐 원클릭 배포
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/farandaway89/-Real-time-Facial-Expression-Emotion-Recognition-AI-System-using-TensorFlow.js-)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/farandaway89/-Real-time-Facial-Expression-Emotion-Recognition-AI-System-using-TensorFlow.js-)
+
 ## 🚀 빠른 실행 (3단계만!)
 
 ### 방법 1: 압축 파일 다운로드 (추천)
