@@ -1,0 +1,25 @@
+{
+  "name": "real-time-facial-emotion-recognition",
+  "version": "1.0.0",
+  "description": "Real-time Facial Expression Emotion Recognition AI System using TensorFlow.js",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080 -o",
+    "dev": "npx http-server -p 8080"
+  },
+  "keywords": [
+    "tensorflow.js",
+    "face-api.js",
+    "emotion-recognition",
+    "facial-expression",
+    "deep-learning",
+    "real-time",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

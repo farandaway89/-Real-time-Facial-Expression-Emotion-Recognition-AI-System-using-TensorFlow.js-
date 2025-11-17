@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 얼굴 표정 감정 인식 시스템</title>
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- TensorFlow.js and face-api.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection@1.0.2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+    <!-- Chart.js for emotion tracking visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <!-- jsPDF for report generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎭 실시간 얼굴 표정 감정 인식 시스템</h1>
+            <p class="subtitle">TensorFlow.js 기반 7가지 감정 분류 AI</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel: Video Stream -->
+            <div class="video-panel">
+                <div class="video-container">
+                    <video id="video" autoplay muted playsinline></video>
+                    <canvas id="overlay"></canvas>
+                </div>
+
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-primary">시작하기</button>
+                    <button id="stopBtn" class="btn btn-secondary" disabled>정지하기</button>
+                    <button id="screenshotBtn" class="btn btn-info" disabled>스크린샷</button>
+                </div>
+
+                <div class="status-panel">
+                    <div class="status-item">
+                        <span class="status-label">모델 상태:</span>
+                        <span id="modelStatus" class="status-value">로딩 중...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">감지된 얼굴:</span>
+                        <span id="faceCount" class="status-value">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">FPS:</span>
+                        <span id="fps" class="status-value">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Emotion Analysis -->
+            <div class="analysis-panel">
+                <!-- Current Emotion Display -->
+                <div class="emotion-display">
+                    <h2>현재 감정 상태</h2>
+                    <div class="current-emotion">
+                        <div class="emotion-icon" id="emotionIcon">😐</div>
+                        <div class="emotion-name" id="emotionName">중립</div>
+                        <div class="emotion-confidence" id="emotionConfidence">0%</div>
+                    </div>
+                </div>
+
+                <!-- Emotion Probabilities -->
+                <div class="emotion-probabilities">
+                    <h3>감정 확률 분포</h3>
+                    <div class="probability-bars">
+                        <div class="probability-item">
+                            <span class="emotion-label">😊 행복 (Happy)</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill" id="prob-happy"></div>
+                            </div>
+                            <span class="probability-value" id="val-happy">0%</span>
+                        </div>
+                        <div class="probability-item">
+                            <span class="emotion-label">😢 슬픔 (Sad)</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill" id="prob-sad"></div>
+                            </div>
+                            <span class="probability-value" id="val-sad">0%</span>
+                        </div>
+                        <div class="probability-item">
+                            <span class="emotion-label">😠 화남 (Angry)</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill" id="prob-angry"></div>
+                            </div>
+                            <span class="probability-value" id="val-angry">0%</span>
+                        </div>
+                        <div class="probability-item">
+                            <span class="emotion-label">😨 두려움 (Fearful)</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill" id="prob-fearful"></div>
+                            </div>
+                            <span class="probability-value" id="val-fearful">0%</span>
+                        </div>
+                        <div class="probability-item">
+                            <span class="emotion-label">😲 놀람 (Surprised)</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill" id="prob-surprised"></div>
+                            </div>
+                            <span class="probability-value" id="val-surprised">0%</span>
+                        </div>
+                        <div class="probability-item">
+                            <span class="emotion-label">🤢 혐오 (Disgusted)</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill" id="prob-disgusted"></div>
+                            </div>
+                            <span class="probability-value" id="val-disgusted">0%</span>
+                        </div>
+                        <div class="probability-item">
+                            <span class="emotion-label">😐 중립 (Neutral)</span>
+                            <div class="probability-bar">
+                                <div class="probability-fill" id="prob-neutral"></div>
+                            </div>
+                            <span class="probability-value" id="val-neutral">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emotion Tracking Chart -->
+        <div class="tracking-section">
+            <div class="section-header">
+                <h2>📊 감정 변화 트래킹</h2>
+                <div class="tracking-controls">
+                    <button id="clearDataBtn" class="btn btn-small">데이터 초기화</button>
+                    <button id="exportDataBtn" class="btn btn-small">데이터 내보내기</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="emotionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="statistics-section">
+            <h2>📈 통계 분석</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-label">분석 시간</div>
+                    <div class="stat-value" id="analysisTime">0초</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-label">가장 많은 감정</div>
+                    <div class="stat-value" id="dominantEmotion">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-label">감정 변화 횟수</div>
+                    <div class="stat-value" id="emotionChanges">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💯</div>
+                    <div class="stat-label">평균 신뢰도</div>
+                    <div class="stat-value" id="avgConfidence">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Generation -->
+        <div class="report-section">
+            <h2>📋 임상 리포트 생성</h2>
+            <div class="report-controls">
+                <div class="report-info">
+                    <label for="patientName">환자 이름:</label>
+                    <input type="text" id="patientName" placeholder="환자 이름 입력">
+
+                    <label for="sessionNotes">세션 노트:</label>
+                    <textarea id="sessionNotes" placeholder="세션에 대한 추가 메모를 입력하세요..."></textarea>
+                </div>
+                <button id="generateReportBtn" class="btn btn-large btn-primary">
+                    📄 임상 리포트 생성
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/emotionTracker.js"></script>
+    <script src="js/emotionRecognition.js"></script>
+    <script src="js/reportGenerator.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
