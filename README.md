@@ -6,6 +6,22 @@ Real-time Facial Expression Emotion Recognition AI System using TensorFlow.js
 [![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-4.11.0-orange.svg)](https://www.tensorflow.org/js)
 [![Face-API.js](https://img.shields.io/badge/Face--API.js-0.22.2-blue.svg)](https://github.com/justadudewhohacks/face-api.js)
 
+## 🚀 빠른 실행 (3단계만!)
+
+### 방법 1: 압축 파일 다운로드 (추천)
+1. **[여기 클릭 - ZIP 다운로드](../../archive/refs/heads/claude/emotion-recognition-system-019c264DamKTfeJYLByAsTyK.zip)**
+2. **압축 풀기**
+3. **index.html을 Chrome으로 드래그**
+
+### 방법 2: Git Clone
+```bash
+git clone https://github.com/farandaway89/-Real-time-Facial-Expression-Emotion-Recognition-AI-System-using-TensorFlow.js-.git
+cd -Real-time-Facial-Expression-Emotion-Recognition-AI-System-using-TensorFlow.js-
+```
+그 다음 index.html을 브라우저로 열기
+
+---
+
 ## 📋 목차
 
 - [프로젝트 소개](#프로젝트-소개)
