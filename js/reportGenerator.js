@@ -47,12 +47,15 @@ class ReportGenerator {
             pdf.setTextColor(0, 0, 0);
             pdf.setFontSize(11);
 
-            const reportDate = new Date().toLocaleString('ko-KR', {
+            // Use English date format to avoid encoding issues in PDF
+            const now = new Date();
+            const reportDate = now.toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
+                hour12: false
             });
 
             pdf.text(`Report Date: ${reportDate}`, margin, yPos);
@@ -81,15 +84,15 @@ class ReportGenerator {
             pdf.setFontSize(10);
             const statsY = yPos + 8;
 
-            // Dominant emotion
+            // Dominant emotion - English only for PDF compatibility
             const emotionNames = {
-                happy: 'Happy (행복)',
-                sad: 'Sad (슬픔)',
-                angry: 'Angry (화남)',
-                fearful: 'Fearful (두려움)',
-                surprised: 'Surprised (놀람)',
-                disgusted: 'Disgusted (혐오)',
-                neutral: 'Neutral (중립)'
+                happy: 'Happy',
+                sad: 'Sad',
+                angry: 'Angry',
+                fearful: 'Fearful',
+                surprised: 'Surprised',
+                disgusted: 'Disgusted',
+                neutral: 'Neutral'
             };
 
             pdf.text(`Dominant Emotion: ${emotionNames[stats.dominantEmotion]}`, margin + 5, statsY);

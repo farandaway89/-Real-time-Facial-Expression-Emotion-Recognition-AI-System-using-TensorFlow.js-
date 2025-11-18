@@ -388,12 +388,23 @@ class EmotionTracker {
         const totalDataPoints = this.emotionHistory.length;
         const dominantEmotion = this.getMostFrequentEmotion();
 
+        // Calculate percentages based on CURRENT history only (not accumulated counts)
+        const currentCounts = {
+            happy: 0, sad: 0, angry: 0, fearful: 0,
+            surprised: 0, disgusted: 0, neutral: 0
+        };
+
+        // Count emotions in current history
+        this.emotionHistory.forEach(point => {
+            currentCounts[point.dominantEmotion]++;
+        });
+
         // Calculate percentages
         const emotionPercentages = {};
-        for (const [emotion, count] of Object.entries(this.emotionCounts)) {
+        for (const [emotion, count] of Object.entries(currentCounts)) {
             emotionPercentages[emotion] = totalDataPoints > 0
                 ? ((count / totalDataPoints) * 100).toFixed(1)
-                : 0;
+                : '0.0';
         }
 
         // Calculate average confidence
